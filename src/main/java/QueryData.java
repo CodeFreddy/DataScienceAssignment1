@@ -56,6 +56,5 @@ public class QueryData {
                 sectionQueryList.add(queryStr);
             }
         }
-
     }
 }

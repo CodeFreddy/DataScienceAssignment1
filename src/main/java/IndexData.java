@@ -18,18 +18,23 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class IndexData {
-    static final private String INDEX_DIRECTORY = "index";
+//    static final private String INDEX_DIRECTORY = "index";
 
-    public static void indexData(String filePath) throws IOException {
+    public static void indexData(String INDEX_DIRECTORY,String filePath) throws IOException {
         Directory indexDir = FSDirectory.open((new File(INDEX_DIRECTORY)).toPath());
+
         IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+
         IndexWriter indexWriter = new IndexWriter(indexDir, config);
 
         System.out.println("Start Indexing...");
 
+        int count = 0;
         for(Data.Paragraph p: DeserializeData.iterableParagraphs(new FileInputStream(new File(filePath))))
         {
+            //System.out.println(count++);
             Document doc = convertToLuceneDoc(p);
             indexWriter.addDocument(doc);
         }
