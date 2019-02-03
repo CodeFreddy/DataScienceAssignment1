@@ -2,6 +2,7 @@ package main.java;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Main {
 
@@ -27,23 +28,20 @@ public class Main {
 
 
         indexer = new IndexData(INDEX_DIRECTORY, dataPath);
-
-
+//        QueryData queryData = new QueryData(queryPath);
+//
+//        Map<String,String> pageMap = queryData.getAllPageQueries();
+//        Map<String,String> sectionMap = queryData.getAllSectionQueries();
         /*
         // Store all query strings temporarily.
-        QueryData queryData = new QueryData(queryPath);
 
 
-        ArrayList<String> pageList = queryData.getAllPageQueries();
-        ArrayList<String> sectionList = queryData.getAllSectionQueries();
-
-
-        System.out.println("Got " + pageList.size() + " pages and " + sectionList.size() + " sections.");
+        System.out.println("Got " + pageMap.size() + " pages and " + sectionMap.size() + " sections.");
 
         // Lucene Search
 
 
-        SearchData searcher = new SearchData(INDEX_DIRECTORY, pageList, sectionList, Max_Results);
+        SearchData searcher = new SearchData(INDEX_DIRECTORY, pageMap, sectionMap, Max_Results);
         */
 
         System.out.println("Finished");

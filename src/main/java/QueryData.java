@@ -7,37 +7,44 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QueryData {
-    ArrayList<String> pageQueryList;
-    ArrayList<String> sectionQueryList;
+//    ArrayList<String> pageQueryList;
+//    ArrayList<String> sectionQueryList;
+
+        Map<String,String> pageQueryMap;
+        Map<String,String> sectionQueryMap;
+
+
     static final private int numofQueryFiles = 5;
     //static final private String pageName = "train.pages.cbor";
 
     public  QueryData(String queryFilePath)
     {
-        if(pageQueryList == null || sectionQueryList == null)
-        {
-            pageQueryList = new ArrayList<>();
-            sectionQueryList = new ArrayList<>();
+
+        if (pageQueryMap == null || sectionQueryMap == null){
+            pageQueryMap = new HashMap<>();
+            sectionQueryMap = new HashMap<>();
             try {
                 storeAllQuery(queryFilePath);
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public ArrayList<String> getAllPageQueries()
-    {
-        return pageQueryList;
 
     }
 
-    public  ArrayList<String> getAllSectionQueries()
+    public Map<String,String> getAllPageQueries(){
+        return pageQueryMap;
+    }
+
+    public  Map<String,String> getAllSectionQueries()
     {
-        return sectionQueryList;
+        return sectionQueryMap;
     }
 
     public void storeAllQuery(String filePath) throws FileNotFoundException {
@@ -46,14 +53,23 @@ public class QueryData {
 
         for(Data.Page page : DeserializeData.iterableAnnotations(fis))
         {
-            pageQueryList.add(page.getPageName());
+            pageQueryMap.put(page.getPageId(),page.getPageName());
+
+
             for (List<Data.Section> sectionPath : page.flatSectionPaths()) {
                 String queryStr = page.getPageName();
                 for (Data.Section section : sectionPath) {
-                    queryStr += "/";
+                    //queryStr += "/";
+
+                    //queryStr += section.getHeading();
+
+                    queryStr +=" ";
+
                     queryStr += section.getHeading();
                 }
-                sectionQueryList.add(queryStr);
+//                sectionQueryList.add(queryStr);
+
+                sectionQueryMap.put(Data.sectionPathId(page.getPageId(),sectionPath),queryStr);
             }
         }
     }

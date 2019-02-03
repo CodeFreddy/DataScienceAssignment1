@@ -1,5 +1,6 @@
 package main.java;
 
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -16,18 +17,19 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class SearchData {
     static final private String OUTPUT_DIR = "output";
 //    static final private String INDEX_DIRECTORY = "index";
-   public SearchData(String INDEX_DIRECTORY,ArrayList<String> pageList,ArrayList<String> sectionList,int Max_Results){
+   public SearchData(String INDEX_DIRECTORY, Map<String,String> pageMap, Map<String,String> sectionMap, int Max_Results){
 
        // 1. For pages.
-       System.out.println("Search Results for " + pageList.size() + " pages...");
+       System.out.println("Search Results for " + pageMap.size() + " pages...");
        ArrayList<String> pageResults = null;
 
        try {
-           pageResults = getSearchResult(INDEX_DIRECTORY,pageList, Max_Results);
+           pageResults = getSearchResult(INDEX_DIRECTORY,pageMap, Max_Results);
        } catch (IOException e) {
            e.printStackTrace();
        } catch (ParseException e) {
@@ -43,11 +45,13 @@ public class SearchData {
 
        System.out.println("Pages Done.");
 
+
+
        // 2. Create run file for sections.
-       System.out.println("Search Results for " + sectionList.size() + " sections...");
+       System.out.println("Search Results for " + sectionMap.size() + " sections...");
        ArrayList<String> sectionResults = null;
        try {
-           sectionResults = getSearchResult(INDEX_DIRECTORY,sectionList, Max_Results);
+           sectionResults = getSearchResult(INDEX_DIRECTORY,sectionMap, Max_Results);
        } catch (IOException e) {
            e.printStackTrace();
        } catch (ParseException e) {
@@ -62,7 +66,7 @@ public class SearchData {
        System.out.println("All Done!");
    }
 
-    private static ArrayList<String> getSearchResult(String INDEX_DIRECTORY,ArrayList<String> queriesStr, int max_result)
+    private static ArrayList<String> getSearchResult(String INDEX_DIRECTORY,Map<String,String> queriesStr, int max_result)
             throws IOException, ParseException {
         ArrayList<String> runFileStr = new ArrayList<String>();
 
@@ -70,9 +74,12 @@ public class SearchData {
                 DirectoryReader.open(FSDirectory.open((new File(INDEX_DIRECTORY).toPath()))));
         searcher.setSimilarity(new BM25Similarity());
 
-        QueryParser parser = new QueryParser("content", new StandardAnalyzer());
+        QueryParser parser = new QueryParser("content", new EnglishAnalyzer());
 
-        for (String queryStr : queriesStr) {
+        for (Map.Entry<String,String> entry : queriesStr.entrySet()){
+
+            String queryStr = entry.getValue();
+            String queryId = entry.getKey();
             Query q = parser.parse(QueryParser.escape(queryStr));
             TopDocs tops = searcher.search(q, max_result);
             ScoreDoc[] scoreDoc = tops.scoreDocs;
@@ -83,12 +90,16 @@ public class SearchData {
                 float rankScore = score.score;
                 int rank = i + 1;
 
-                String runStr = "enwiki:" + queryStr.replace(" ", "%20") + " Q0 " + paraId + " " + rank + " "
-                        + rankScore + " BM25";
+               // String runStr = "enwiki:" + queryStr.replace(" ", "%20") + " Q0 " + paraId + " " + rank + " "+ rankScore + " BM25";
+
+                String runStr = queryId+" Q0 "+paraId+" "+rank+ " "+rankScore+" "+"team3"+" BM25";
                 System.out.println(runStr);
                 runFileStr.add(runStr);
             }
+
         }
+
+
 
         return runFileStr;
     }
