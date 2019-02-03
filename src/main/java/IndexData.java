@@ -3,7 +3,7 @@ package main.java;
 
 import edu.unh.cs.treccar_v2.Data;
 import edu.unh.cs.treccar_v2.read_data.DeserializeData;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -20,14 +20,22 @@ import java.io.IOException;
 public class IndexData {
 //    static final private String INDEX_DIRECTORY = "index";
 
-    public static void indexData(String INDEX_DIRECTORY,String filePath) throws IOException {
+    private IndexWriter indexWriter;
+
+
+    //INDEX_DIRECTORY is the path of index, filepath is the directory of corpus
+    public IndexData(String INDEX_DIRECTORY,String filePath) throws IOException {
+
+        //change to Eng analyzer
         Directory indexDir = FSDirectory.open((new File(INDEX_DIRECTORY)).toPath());
 
-        IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+        //IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+
+        IndexWriterConfig config = new IndexWriterConfig(new EnglishAnalyzer());
 
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
 
-        IndexWriter indexWriter = new IndexWriter(indexDir, config);
+        indexWriter = new IndexWriter(indexDir, config);
 
         System.out.println("Start Indexing...");
 
@@ -37,18 +45,22 @@ public class IndexData {
             //System.out.println(count++);
             Document doc = convertToLuceneDoc(p);
             indexWriter.addDocument(doc);
+
+            if (count %100 == 0){
+                indexWriter.commit();
+            }
         }
         System.out.println("=======================");
         System.out.println("Indexing was done");
-        indexWriter.commit();
+//        indexWriter.commit();
         indexWriter.close();
     }
 
     public static Document convertToLuceneDoc(Data.Paragraph paragraph)
     {
         Document doc = new Document();
-        doc.add(new StringField("paraid", paragraph.getParaId(), Field.Store.YES));
-        doc.add(new TextField("content", paragraph.getTextOnly(), Field.Store.NO));
+        doc.add(new StringField("paraid", paragraph.getParaId(), Field.Store.YES));//id
+        doc.add(new TextField("content", paragraph.getTextOnly(), Field.Store.YES));//body
         return doc;
     }
 }

@@ -13,7 +13,7 @@ public class QueryData {
     ArrayList<String> pageQueryList;
     ArrayList<String> sectionQueryList;
     static final private int numofQueryFiles = 5;
-    static final private String pageName = "train.pages.cbor";
+    //static final private String pageName = "train.pages.cbor";
 
     public  QueryData(String queryFilePath)
     {

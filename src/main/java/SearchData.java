@@ -21,9 +21,11 @@ public class SearchData {
     static final private String OUTPUT_DIR = "output";
 //    static final private String INDEX_DIRECTORY = "index";
    public SearchData(String INDEX_DIRECTORY,ArrayList<String> pageList,ArrayList<String> sectionList,int Max_Results){
+
        // 1. For pages.
        System.out.println("Search Results for " + pageList.size() + " pages...");
        ArrayList<String> pageResults = null;
+
        try {
            pageResults = getSearchResult(INDEX_DIRECTORY,pageList, Max_Results);
        } catch (IOException e) {
@@ -31,10 +33,14 @@ public class SearchData {
        } catch (ParseException e) {
            e.printStackTrace();
        }
+
        String pageRunFileName = "pages-bm25.run";
+
        System.out.println("Retrieved " + pageResults.size() + " results for pages. Write results to " + OUTPUT_DIR + "/"
                + pageRunFileName);
+
        writeToFile(pageRunFileName, pageResults);
+
        System.out.println("Pages Done.");
 
        // 2. Create run file for sections.
