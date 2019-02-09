@@ -45,7 +45,7 @@ public class IndexData {
             //System.out.println(count++);
             Document doc = convertToLuceneDoc(p);
             indexWriter.addDocument(doc);
-            count++;
+            System.out.println(count++);
             if (count %100 == 0){
                 indexWriter.commit();
             }

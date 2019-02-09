@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Main {
 
-    static private String INDEX_DIRECTORY;
+    static private String INDEX_DIRECTORY = "/Users/xin/Documents/19Spring/DS/index";
     private String OUTPUT_DIR = "output";
     static final private int Max_Results = 100;
 
@@ -27,12 +27,12 @@ public class Main {
         dataPath = args[2];
 
 
-        indexer = new IndexData(INDEX_DIRECTORY, dataPath);
-//        QueryData queryData = new QueryData(queryPath);
+       // indexer = new IndexData(INDEX_DIRECTORY, dataPath);
+        QueryData queryData = new QueryData(queryPath);
 //
-//        Map<String,String> pageMap = queryData.getAllPageQueries();
-//        Map<String,String> sectionMap = queryData.getAllSectionQueries();
-        /*
+        Map<String,String> pageMap = queryData.getAllPageQueries();
+        Map<String,String> sectionMap = queryData.getAllSectionQueries();
+
         // Store all query strings temporarily.
 
 
@@ -42,7 +42,7 @@ public class Main {
 
 
         SearchData searcher = new SearchData(INDEX_DIRECTORY, pageMap, sectionMap, Max_Results);
-        */
+
 
         System.out.println("Finished");
     }
